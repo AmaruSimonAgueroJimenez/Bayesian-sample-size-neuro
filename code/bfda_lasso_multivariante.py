@@ -814,14 +814,14 @@ def main():
     ap.add_argument("--burn", type=int, default=800)
     ap.add_argument("--target", type=float, default=0.80)
     ap.add_argument("--seed", type=int, default=20260822)
-    ap.add_argument("--outdir", type=str, default="results")
+    ap.add_argument("--outdir", type=str, default="resultados_bfda")
     ap.add_argument("--rapido", action="store_true")
     ap.add_argument("--verificar", action="store_true")
     ap.add_argument("--extra", action="store_true",
                     help="escenarios K=5/K=14 y criterio BF 4/6/10")
     ap.add_argument("--predictor", choices=["hormonal", "pm25"],
                     default="hormonal",
-                    help="pm25: exposición residencial PM2.5 (escalar ACAG) "
+                    help="pm25: exposición residencial PM2.5 (escalar, modelo) "
                          "en lugar del PC1 hormonal")
     ap.add_argument("--beta-posterior", action="store_true",
                     help="recuperación del beta posterior estandarizado")
@@ -831,7 +831,7 @@ def main():
     cfg = ap.parse_args()
 
     rng = np.random.default_rng(cfg.seed)
-    outdir = Path(__file__).resolve().parent.parent / cfg.outdir
+    outdir = Path(__file__).resolve().parent / cfg.outdir
     outdir.mkdir(exist_ok=True)
 
     if cfg.predictor == "pm25":
@@ -841,10 +841,10 @@ def main():
         YNAME = "PM$_{2.5}$ exposure"
         YNAME_C2 = "PM$_{2.5}$ exposure"
         C2_FOOT = ("PM2.5 exposure calibrated on the cohort's residential "
-                   "comunas (ACAG 2013-2022; corr with age set to 0)")
+                   "comunas (laboratory model surface 2013-2022; corr with age set to 0)")
         outdir = outdir / "pm25"
         outdir.mkdir(exist_ok=True)
-        print("[predictor] PM2.5 residencial (escalar ACAG) · c_edad = 0 · "
+        print("[predictor] PM2.5 residencial (escalar, modelo) · c_edad = 0 · "
               f"salidas en {outdir}/")
 
     if cfg.verificar:

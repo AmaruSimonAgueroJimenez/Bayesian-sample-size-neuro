@@ -37,14 +37,14 @@
 Residential \pmf{} Exposure and Brain Structure}\\[6pt]
 {\large\color{SoftGrey} Global-model Bayes factors under a permutation-marginalized conditional\\ multivariate Gaussian generator, calibrated with cohort \pmf{} exposure and DKT data}}
 \author{Luis Luarte \; \textperiodcentered\; Amaru Ag\"uero}
-\date{August 23, 2026}
+\date{August 24, 2026}
 
 \begin{document}
 \maketitle
 \vspace{-1.4em}
 
 \begin{abstract}
-\noindent This report asks how many participants are needed so that the \emph{whole set} of brain principal components, taken jointly, provides strong Bayesian evidence of explaining inter-individual differences in long-term exposure to fine particulate air pollution (\pmf). We simulate thousands of virtual studies in which real exposure values (the 2013--2022 mean \pmf{} concentration of each participant's residential comuna, ACAG satellite product; $540$ participants across $52$ comunas) are linked to synthetic brain components that carry the empirical eigenvalue spectrum of our DKT cortical-thickness data. A fixed global effect $R^{2}$ is split across components at random in every iteration, so no assumption is made about which component carries the signal, and evidence is the Bayes factor of the full regression model against the intercept-only null (the exact equivalent of \texttt{regressionBF} in R). Across the effect grid $R^{2}\in\{0.04,0.09,0.16,0.25\}$ and thresholds $\BF_{10}\ge4$, $6$ and $10$: with a compact set of five components, $R^{2}=0.25$ requires $N=70$--$82$, $R^{2}=0.16$ requires $N=127$--$140$ and $R^{2}=0.09$ requires $N=248$--$277$; with the laboratory's full twenty-component set the same effects require $147$--$163$, $277$--$294$, and more than $300$. An effect of $R^{2}=0.04$ is out of reach at any dimensionality, a sobering number given that global effects of long-term \pmf{} exposure on brain structure reported in the epidemiological literature sit near that magnitude. False positives stay below $1\%$ everywhere and vanish as $N$ grows. Applied to Cohort 2 (MCI vs.\ controls, with the residential exposure included in the model), a group separation of $R^{2}=0.25$ (Mahalanobis $D=1.16$) needs $36$--$41$ per group with five components and $74$--$82$ with twenty, while $R^{2}=0.16$ ($D=0.87$) needs $66$--$73$ and $140$--$148$ respectively; an accompanying MCI--HC exposure difference of $d_h=0.3$ shortens these requirements. Dimensionality, not the evidence threshold, is what drives the design: moving from $\BF\ge4$ to $\BF\ge10$ costs only $12$--$29$ participants in any attainable cell, whereas going from five to twenty components can double or triple the requirement.
+\noindent This report asks how many participants are needed so that the \emph{whole set} of brain principal components, taken jointly, provides strong Bayesian evidence of explaining inter-individual differences in long-term exposure to fine particulate air pollution (\pmf). We simulate thousands of virtual studies in which real exposure values (the 2013--2022 mean \pmf{} concentration of each participant's residential comuna from the laboratory's monitor-calibrated model surface; $600$ participants across $52$ comunas) are linked to synthetic brain components that carry the empirical eigenvalue spectrum of our DKT cortical-thickness data. A fixed global effect $R^{2}$ is split across components at random in every iteration, so no assumption is made about which component carries the signal, and evidence is the Bayes factor of the full regression model against the intercept-only null (the exact equivalent of \texttt{regressionBF} in R). Across the effect grid $R^{2}\in\{0.04,0.09,0.16,0.25\}$ and thresholds $\BF_{10}\ge4$, $6$ and $10$: with a compact set of five components, $R^{2}=0.25$ requires $N=70$--$84$, $R^{2}=0.16$ requires $N=130$--$144$ and $R^{2}=0.09$ requires $N=248$--$285$; with the laboratory's full twenty-component set the same effects require $149$--$164$, $275$--$291$, and more than $300$. An effect of $R^{2}=0.04$ is out of reach at any dimensionality, a sobering number given that global effects of long-term \pmf{} exposure on brain structure reported in the epidemiological literature sit near that magnitude. False positives stay below $1\%$ everywhere and vanish as $N$ grows. Applied to Cohort 2 (MCI vs.\ controls, with the residential exposure included in the model), a group separation of $R^{2}=0.25$ (Mahalanobis $D=1.16$) needs $36$--$41$ per group with five components and $74$--$82$ with twenty, while $R^{2}=0.16$ ($D=0.87$) needs $66$--$73$ and $140$--$148$ respectively; an accompanying MCI--HC exposure difference of $d_h=0.3$ shortens these requirements. Dimensionality, not the evidence threshold, is what drives the design: moving from $\BF\ge4$ to $\BF\ge10$ costs only $9$--$37$ participants in any attainable cell, whereas going from five to twenty components can double or triple the requirement.
 \end{abstract}
 
 \section{Introduction}
@@ -59,7 +59,7 @@ Two design dimensions are explored throughout: the number of retained brain comp
 
 \subsection{Empirical inputs}
 
-\textbf{Response.} $Y$ is the standardized long-term residential \pmf{} exposure index. Each participant's exposure is the 2013--2022 mean \pmf{} concentration of their residential comuna from the ACAG satellite-derived annual surface; after normalizing comuna names in the recruitment database, $540$ of $601$ valid records were assigned an exposure, spanning $52$ comunas. The participant-level distribution has mean $24.3$ \ugm, SD $3.2$, range $12.7$--$27.8$ and skewness $-1.08$: most participants live in high-exposure Santiago comunas, with a thinner low-exposure tail (Figure~\ref{fig:calib}A--B). In every iteration, $N$ observations are resampled with replacement from this empirical pool of $540$ standardized values, so the simulation inherits the true, strongly left-skewed shape of the exposure distribution. The repository's candidate exposure metrics (long-term mean, mean peak level, hours above $50$ \ugm, cumulative dose above $50$, episode counts) correlate $0.82$--$0.95$ at the comuna level (Figure~\ref{fig:calib}C); they form essentially one dimension, so the scalar long-term mean is used as the exposure index and effect sizes below are per SD of exposure ($1$ SD $=3.2$ \ugm{} in this cohort).
+\textbf{Response.} $Y$ is the standardized long-term residential \pmf{} exposure index. Each participant's exposure is the 2013--2022 mean \pmf{} concentration of their residential comuna from the laboratory's own \pmf{} model surface: a LightGBM ensemble trained on SINCA monitor data with satellite aerosol optical depth (MAIAC), MERRA-2 and ERA5 meteorology and land-use predictors, validated against monitors at daily $r=0.70$, FAC2 $=0.87$ and mean bias $-5\%$ ($95{,}446$ station-days); at the comuna level it agrees with the ACAG satellite product \cite{vandonkelaar} ($r=0.71$, identical cohort mean) while resolving stronger within-city contrasts. After normalizing comuna names in the recruitment database, $600$ of $601$ valid records were assigned an exposure, spanning $52$ comunas. The participant-level distribution has mean $24.6$ \ugm, SD $3.2$, range $4.6$--$32.9$ and skewness $-1.03$: most participants live in high-exposure Santiago comunas, with a lower tail (Figure~\ref{fig:calib}A--B). In every iteration, $N$ observations are resampled with replacement from this empirical pool of $600$ standardized values, so the simulation inherits the true, strongly left-skewed shape of the exposure distribution. The candidate exposure metrics, all derived from the same hourly model surface (long-term mean, mean peak level, hours above $50$ \ugm, cumulative dose above $50$, episode counts) correlate $0.82$--$1.00$ at the comuna level (Figure~\ref{fig:calib}C); they form essentially one dimension, so the scalar long-term mean is used as the exposure index and effect sizes below are per SD of exposure ($1$ SD $=3.2$ \ugm{} in this cohort).
 
 \begin{figure}[H]
 \centering\includegraphics[width=\textwidth]{Fig_calibracion_pm25.png}
@@ -114,7 +114,7 @@ with prior scale $s=\sqrt{2}/4$, the \texttt{BayesFactor::regressionBF} default 
 N^{*}=\min\{N:\ \mathrm{Power}(N,R^{2})\ge0.80\}.
 \end{equation}
 
-Because $\BF_{10}$ is monotone in the sample $\hat R^{2}$ for fixed $(N,p)$, the engine inverts \eqref{eq:bfreg} once per $(N,p,\tau)$ and evaluates power over $M=4{,}000$ simulated $\hat R^{2}$ values per cell (batched OLS). The integral was verified against independent adaptive quadrature (relative error $<10^{-10}$). Two further checks are worth noting. First, the false-positive rate $P(\BF_{10}\ge\tau\mid R^{2}=0)$ is monitored across the whole grid. Second, the permutation marginalization was verified to be \emph{exactly} innocuous for this global criterion: by rotation invariance of the Gaussian generator, the distribution of $\hat R^{2}$ depends on $\bm\rho$ only through $\lVert\bm\rho\rVert^{2}=R^{2}$, so power is invariant to how the effect is split across components (empirical check with the exposure pool: mean $\hat R^{2}$ of $0.2791$ permuted vs.\ $0.2782$ fixed at $N=100$, $R^{2}=0.10$, $K=20$). The paradigm is therefore alignment-free by construction, which is its design strength.
+Because $\BF_{10}$ is monotone in the sample $\hat R^{2}$ for fixed $(N,p)$, the engine inverts \eqref{eq:bfreg} once per $(N,p,\tau)$ and evaluates power over $M=4{,}000$ simulated $\hat R^{2}$ values per cell (batched OLS). The integral was verified against independent adaptive quadrature (relative error $<10^{-10}$). Two further checks are worth noting. First, the false-positive rate $P(\BF_{10}\ge\tau\mid R^{2}=0)$ is monitored across the whole grid. Second, the permutation marginalization was verified to be \emph{exactly} innocuous for this global criterion: by rotation invariance of the Gaussian generator, the distribution of $\hat R^{2}$ depends on $\bm\rho$ only through $\lVert\bm\rho\rVert^{2}=R^{2}$, so power is invariant to how the effect is split across components (empirical check with the exposure pool: mean $\hat R^{2}$ of $0.2814$ permuted vs.\ $0.2801$ fixed at $N=100$, $R^{2}=0.10$, $K=20$). The paradigm is therefore alignment-free by construction, which is its design strength.
 
 \subsection{Parameter space}
 
@@ -135,22 +135,22 @@ For the MCI vs.\ HC cohort the paradigm is applied with the group as response: $
 $K$ & Global effect & $\BF_{10}\ge4$ & $\BF_{10}\ge6$ & $\BF_{10}\ge10$\\
 \midrule
 \rowcolor{RowGrey}
-5 & $R^2=0.09$ & 248 & 262 & 277\\
+5 & $R^2=0.09$ & 248 & 266 & 285\\
 \rowcolor{RowGrey}
-5 & $R^2=0.16$ & \textbf{127} & 133 & 140\\
+5 & $R^2=0.16$ & \textbf{130} & 137 & 144\\
 \rowcolor{RowGrey}
-5 & $R^2=0.25$ & \textbf{70} & 76 & 82\\
-10 & $R^2=0.16$ & 178 & 185 & 194\\
-10 & $R^2=0.25$ & 98 & 105 & 115\\
-14 (90\% var.) & $R^2=0.16$ & 217 & 227 & 237\\
-14 (90\% var.) & $R^2=0.25$ & 123 & 128 & 135\\
-20 (lab ICA) & $R^2=0.16$ & 277 & 285 & 294\\
-20 (lab ICA) & $R^2=0.25$ & 147 & 152 & 163\\
+5 & $R^2=0.25$ & \textbf{70} & 76 & 84\\
+10 & $R^2=0.16$ & 181 & 187 & 195\\
+10 & $R^2=0.25$ & 100 & 107 & 116\\
+14 (90\% var.) & $R^2=0.16$ & 222 & 230 & 237\\
+14 (90\% var.) & $R^2=0.25$ & 126 & 131 & 135\\
+20 (lab ICA) & $R^2=0.16$ & 275 & 283 & 291\\
+20 (lab ICA) & $R^2=0.25$ & 149 & 156 & 164\\
 \bottomrule
 \end{tabular}
 
 \vspace{2pt}
-{\footnotesize $R^{2}=0.04$ is not attainable at any $K$ with $N\le300$; $R^{2}=0.09$ is attainable only with $K=5$. False-positive rate under the global null: $<1\%$ at every $(N,K,\tau)$ and decreasing with $N$ (e.g.\ $K=20$, $\BF\ge4$: $0.005$ at $N=60$, $0.001$ at $N=100$, $0.000$ at $N=300$).}
+{\footnotesize $R^{2}=0.04$ is not attainable at any $K$ with $N\le300$; $R^{2}=0.09$ is attainable only with $K=5$. False-positive rate under the global null: $<1\%$ at every $(N,K,\tau)$ and decreasing with $N$ (e.g.\ $K=20$, $\BF\ge4$: $0.004$ at $N=60$, $0.002$ at $N=100$, $0.000$ at $N=300$).}
 \end{table}
 
 \begin{table}[H]
@@ -163,14 +163,14 @@ $K$ & Global effect & $\BF_{10}\ge4$ & $\BF_{10}\ge6$ & $\BF_{10}\ge10$\\
 \cmidrule(lr){2-4}\cmidrule(lr){5-7}
 $N$ & $\BF\ge4$ & $\BF\ge6$ & $\BF\ge10$ & $\BF\ge4$ & $\BF\ge6$ & $\BF\ge10$\\
 \midrule
-60 & 0.729 & 0.684 & 0.616 & 0.204 & 0.172 & 0.137\\
-72 & \textbf{0.823} & 0.780 & 0.733 & 0.284 & 0.247 & 0.206\\
-100 & \textbf{0.956} & \textbf{0.942} & \textbf{0.923} & 0.489 & 0.447 & 0.396\\
+60 & 0.740 & 0.690 & 0.623 & 0.204 & 0.172 & 0.135\\
+72 & \textbf{0.817} & 0.783 & 0.730 & 0.280 & 0.241 & 0.203\\
+100 & \textbf{0.945} & \textbf{0.924} & \textbf{0.905} & 0.493 & 0.456 & 0.400\\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Figure~\ref{fig:v4} shows the full power surfaces. Three regularities emerge. First, under the global-model criterion the required $N$ is driven jointly by the effect size and the dimensionality: at $R^{2}=0.25$ the requirement grows from $70$--$82$ with five components to $147$--$163$ with the full laboratory set of twenty, and at $R^{2}=0.16$ from $127$--$140$ to $277$--$294$, because the JZS prior spreads its mass over all $p$ directions and the marginal likelihood pays for every dimension that carries no signal. Second, the evidence threshold matters much less than the dimensionality: moving from $\BF\ge4$ to $\BF\ge10$ adds only $12$ to $29$ participants in any attainable cell, whereas quadrupling the component count can double or triple the requirement. Third, the criterion is extremely specific: the probability of reaching any threshold under the global null is below $1\%$ everywhere and vanishes as $N$ grows, the expected consistency property of Bayes factors.
+Figure~\ref{fig:v4} shows the full power surfaces. Three regularities emerge. First, under the global-model criterion the required $N$ is driven jointly by the effect size and the dimensionality: at $R^{2}=0.25$ the requirement grows from $70$--$84$ with five components to $149$--$164$ with the full laboratory set of twenty, and at $R^{2}=0.16$ from $130$--$144$ to $275$--$291$, because the JZS prior spreads its mass over all $p$ directions and the marginal likelihood pays for every dimension that carries no signal. Second, the evidence threshold matters much less than the dimensionality: moving from $\BF\ge4$ to $\BF\ge10$ adds only $9$ to $37$ participants in any attainable cell, whereas quadrupling the component count can double or triple the requirement. Third, the criterion is extremely specific: the probability of reaching any threshold under the global null is below $1\%$ everywhere and vanishes as $N$ grows, the expected consistency property of Bayes factors.
 
 \begin{figure}[H]
 \centering\includegraphics[width=\textwidth]{pm25/Fig_v4_MVG.png}
@@ -217,11 +217,11 @@ At the group separations typically reported for MCI, the design is feasible prov
 
 \section{Conclusion}
 
-Under the permutation-marginalized conditional MVG paradigm, with evidence defined as the global-model Bayes factor against the null, the feasibility of the exposure design hinges on how many brain components enter the model. With a compact, prespecified set of five components, a strong association ($R^{2}=0.25$, equivalent to a single component with standardized coefficient $0.5$) requires $70$--$82$ participants depending on the evidence threshold, and a moderate one ($R^{2}=0.16$, coefficient $0.4$) requires $127$--$140$. With the laboratory's full twenty-component set the same effects require $147$--$163$ and $277$--$294$, and nothing below $R^{2}=0.16$ is detectable under $N=300$ at that dimensionality. The realism constraint deserves emphasis for this exposure: epidemiological estimates of the total association between long-term \pmf{} exposure and cortical structure are closer to $R^{2}=0.04$, which is beyond reach at any dimensionality and should not be promised under this criterion; $R^{2}=0.09$, attainable at $N=248$--$277$ with five components, is the realistic upper planning scenario, and it requires committing to a small prespecified component set.
+Under the permutation-marginalized conditional MVG paradigm, with evidence defined as the global-model Bayes factor against the null, the feasibility of the exposure design hinges on how many brain components enter the model. With a compact, prespecified set of five components, a strong association ($R^{2}=0.25$, equivalent to a single component with standardized coefficient $0.5$) requires $70$--$84$ participants depending on the evidence threshold, and a moderate one ($R^{2}=0.16$, coefficient $0.4$) requires $130$--$144$. With the laboratory's full twenty-component set the same effects require $149$--$164$ and $275$--$291$, and nothing below $R^{2}=0.16$ is detectable under $N=300$ at that dimensionality. The realism constraint deserves emphasis for this exposure: epidemiological estimates of the total association between long-term \pmf{} exposure and cortical structure are closer to $R^{2}=0.04$, which is beyond reach at any dimensionality and should not be promised under this criterion; $R^{2}=0.09$, attainable at $N=248$--$285$ with five components, is the realistic upper planning scenario, and it requires committing to a small prespecified component set.
 
 The same structure governs Cohort 2, where the residential exposure is included alongside the brain components: with five components, $36$--$41$ participants per group detect a group separation of $D=1.16$ and $66$--$73$ detect $D=0.87$, while twenty components roughly double those numbers. Including the exposure predictor is costless in specificity and beneficial when an MCI--HC exposure difference is present; an exposure difference on its own, however, almost never triggers the global criterion, so exposure group effects should be examined through their own coefficient rather than through the omnibus test.
 
-Three practical recommendations follow. First, prespecify a compact component set: reducing $K$ from twenty to five is by far the most efficient lever available, worth more than any change of evidence threshold. Second, choose the threshold for interpretability rather than for power, since $\BF\ge10$ costs only $12$ to $29$ participants more than $\BF\ge4$ while providing markedly stronger evidence. Third, exploit the criterion's exceptional specificity: with false-positive rates below $1\%$ that decrease with $N$, a positive global Bayes factor is strong evidence, and the design can be reported as conservative by construction. The paradigm's structural strengths support this reading: it makes no assumption about which component carries the exposure signal (a property that holds exactly, by rotation invariance of the Gaussian generator, and which we verify empirically), and it inherits the true, strongly skewed empirical distribution of the residential exposure through bootstrap resampling. All requirements are reproducible with the released Python engine, analytically equivalent to \texttt{BayesFactor::regressionBF}, and the accompanying R reference implementation.
+Three practical recommendations follow. First, prespecify a compact component set: reducing $K$ from twenty to five is by far the most efficient lever available, worth more than any change of evidence threshold. Second, choose the threshold for interpretability rather than for power, since $\BF\ge10$ costs only $9$ to $37$ participants more than $\BF\ge4$ while providing markedly stronger evidence. Third, exploit the criterion's exceptional specificity: with false-positive rates below $1\%$ that decrease with $N$, a positive global Bayes factor is strong evidence, and the design can be reported as conservative by construction. The paradigm's structural strengths support this reading: it makes no assumption about which component carries the exposure signal (a property that holds exactly, by rotation invariance of the Gaussian generator, and which we verify empirically), and it inherits the true, strongly skewed empirical distribution of the residential exposure through bootstrap resampling. All requirements are reproducible with the released Python engine, analytically equivalent to \texttt{BayesFactor::regressionBF}, and the accompanying R reference implementation.
 
 \section{Reproducibility}
 
@@ -231,7 +231,7 @@ Three practical recommendations follow. First, prespecify a compact component se
 \toprule
 \texttt{bfda\_v4\_condicional\_mvg.py} & Full $K\times R^{2}\times\tau$ grid, figures and tables, run with \texttt{--predictor pm25}; adding \texttt{--cohorte2} runs Cohort 2 ($\sim$1--4 min each). Outputs land in \texttt{results/pm25/}\\
 \texttt{bfda\_v4\_condicional\_mvg.R} & Reference implementation (\texttt{BayesFactor::regressionBF})\\
-\texttt{data/calibracion\_pm25.csv} & Empirical $Y$ pool: participant-level residential exposure, built from \texttt{pm25\_anual\_comunal\_acag.csv} and the recruitment database\\
+\texttt{data/calibracion\_pm25.csv} & Empirical $Y$ pool: participant-level residential exposure, built from the model's daily surface, aggregated 2013--2022, and the recruitment database\\
 \texttt{data/calibracion\_dkt\_eigenvalues.csv} & Empirical DKT eigenvalue spectrum (top 20)\\
 \bottomrule
 \end{tabular}

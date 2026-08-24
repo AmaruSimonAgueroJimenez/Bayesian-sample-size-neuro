@@ -10,8 +10,10 @@ neuroimaging cohort studies:
   cognitively healthy controls.
 
 All simulations are calibrated with real data: SWAN Visit-10 hormone assays,
-DKT-atlas cortical thickness (54 participants x 62 ROIs), and ACAG satellite
-PM2.5 surfaces (2013-2022) mapped to the cohort's residential comunas in Chile.
+DKT-atlas cortical thickness (54 participants x 62 ROIs), and the laboratory's
+monitor-calibrated PM2.5 model surface (LightGBM on SINCA monitors with
+satellite AOD and meteorology; 2013-2022 means) mapped to the cohort's
+residential comunas in Chile.
 
 ## Reports
 
@@ -50,7 +52,7 @@ code/                        Simulation engines and figure scripts
 data/                        Frozen calibration inputs
   calibracion_swan_pc1.csv     Standardized hormonal PC1 + age, by STRAW stage
   calibracion_dkt_*.csv        DKT residuals, ROI SDs, eigenvalue spectrum
-  calibracion_pm25.csv         Participant-level residential PM2.5 exposure
+  calibracion_pm25.csv         Participant-level residential PM2.5 exposure (model surface, 2013-2022 means)
 figures/                     SWAN descriptive figures (used by report v3)
 results/                     Simulation outputs, hormonal arm (figures, CSV grids, JSON summaries)
 results/pm25/                Simulation outputs, PM2.5 arm

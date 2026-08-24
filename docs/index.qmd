@@ -11,9 +11,9 @@ format:
 
 Two cohorts are dimensioned by simulation, each under two Bayesian criteria,
 for two outcome variables. Every virtual study is calibrated with real data:
-SWAN Visit-10 hormone assays, DKT-atlas cortical thickness, and ACAG satellite
-PM$_{2.5}$ surfaces (2013--2022) mapped to the cohort's residential comunas in
-Chile.
+SWAN Visit-10 hormone assays, DKT-atlas cortical thickness, and the
+laboratory's monitor-calibrated PM$_{2.5}$ model surface (2013--2022) mapped to
+the cohort's residential comunas in Chile.
 
 - **Cohort 1**: women aged 40--55 across the menopausal transition; in the
   exposure arm, adults with reconstructable long-term residential PM$_{2.5}$
@@ -39,11 +39,11 @@ evidence is the Bayes factor of the full regression against the null
 (equivalent to `BayesFactor::regressionBF`). Includes Cohort 2 with the
 hormonal PC1 in the model.
 
-### PM$_{2.5}$ exposure arm (residential, ACAG 2013--2022)
+### PM$_{2.5}$ exposure arm (residential model surface, 2013--2022)
 
 [**Version 3 (PM$_{2.5}$): Bayesian-Lasso pipeline**](sample_size_report_v3_pm25.html)
 The same laboratory criterion applied to the standardized residential
-PM$_{2.5}$ exposure index (540 georeferenced participants, 52 comunas).
+PM$_{2.5}$ exposure index (600 georeferenced participants, 52 comunas).
 
 [**Version 4 (PM$_{2.5}$): global-model Bayes factor**](sample_size_report_v4_pm25.html)
 The alignment-free global criterion applied to the exposure arm, with the

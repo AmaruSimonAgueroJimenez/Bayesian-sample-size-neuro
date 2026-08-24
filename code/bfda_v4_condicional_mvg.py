@@ -194,7 +194,7 @@ def correr_cohorte2_v4(cfg, rng, outdir):
     else:
         hlab, hshort, hres = "hormonal PC1", "hormonal", "PC1 hormonal"
         harticle = "a"
-    ev = pd.read_csv(Path(__file__).resolve().parent.parent / "data" /
+    ev = pd.read_csv(Path(__file__).resolve().parent /
                      "calibracion_dkt_eigenvalues.csv")["eigenvalue"].to_numpy()
     Ks = [5, 10, 14, 20]
     taus = [4, 6, 10]
@@ -344,7 +344,7 @@ def main():
     ap.add_argument("--rscale", type=float, default=float(np.sqrt(2) / 4))
     ap.add_argument("--pool", choices=["early_peri", "transition", "all"],
                     default="early_peri")
-    ap.add_argument("--outdir", type=str, default="results")
+    ap.add_argument("--outdir", type=str, default="resultados_bfda")
     ap.add_argument("--cohorte2", action="store_true",
                     help="Cohorte 2 (MCI vs HC) bajo el mismo paradigma")
     ap.add_argument("--predictor", choices=["hormonal", "pm25"],
@@ -352,9 +352,8 @@ def main():
                     help="pm25: pool Y = exposición residencial PM2.5")
     cfg = ap.parse_args()
 
-    raiz = Path(__file__).resolve().parent.parent
-    base = raiz / "data"
-    outdir = raiz / cfg.outdir
+    base = Path(__file__).resolve().parent
+    outdir = base / cfg.outdir
     outdir.mkdir(exist_ok=True)
     rng = np.random.default_rng(cfg.seed)
     if cfg.predictor == "pm25":
@@ -369,7 +368,7 @@ def main():
     if cfg.predictor == "pm25":
         y_pool = pd.read_csv(base / "calibracion_pm25.csv"
                              )["z_exposicion"].to_numpy()
-        ydesc = "cohort residential PM2.5 (ACAG 2013-2022)"
+        ydesc = "cohort residential PM2.5 (laboratory model surface 2013-2022)"
     else:
         pc1 = pd.read_csv(base / "calibracion_swan_pc1.csv")
         if cfg.pool == "early_peri":
