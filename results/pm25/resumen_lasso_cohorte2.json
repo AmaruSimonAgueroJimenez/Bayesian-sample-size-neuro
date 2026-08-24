@@ -1,0 +1,9 @@
+{
+  "criterio": "P(>=1 PC cerebral con CrI95 excluyendo 0) >= target; lasso y=grupo ~ PCs cerebro + PC1 hormonal + edad",
+  "n_total_requerido_dh0": {
+    "0.5": null,
+    "0.65": 140.0,
+    "0.8": 83.0,
+    "1.0": 52.0
+  }
+}

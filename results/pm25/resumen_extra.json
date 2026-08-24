@@ -1,0 +1,27 @@
+{
+  "K90": 14,
+  "n_requerido_lasso_CrI_por_K": {
+    "K5_rho0.3": 128.0,
+    "K5_rho0.4": 71.0,
+    "K10_rho0.3": 136.0,
+    "K10_rho0.4": 72.0,
+    "K14_rho0.3": 137.0,
+    "K14_rho0.4": 74.0,
+    "K20_rho0.3": 142.0,
+    "K20_rho0.4": 75.0
+  },
+  "n_requerido_BF_por_umbral_K20": {
+    "BF4_rho0.2": null,
+    "BF4_rho0.3": null,
+    "BF4_rho0.4": 92.0,
+    "BF4_rho0.5": 63.0,
+    "BF6_rho0.2": null,
+    "BF6_rho0.3": null,
+    "BF6_rho0.4": 99.0,
+    "BF6_rho0.5": 68.0,
+    "BF10_rho0.2": null,
+    "BF10_rho0.3": null,
+    "BF10_rho0.4": 109.0,
+    "BF10_rho0.5": 73.0
+  }
+}

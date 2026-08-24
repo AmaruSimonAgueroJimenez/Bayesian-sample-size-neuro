@@ -1,0 +1,263 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=2.2cm,top=2.4cm,bottom=2.6cm]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+\usepackage[table]{xcolor}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{microtype}
+\usepackage{titlesec}
+\usepackage[colorlinks=true,linkcolor=NavyInk,urlcolor=AccentBlue,citecolor=AccentBlue]{hyperref}
+
+\graphicspath{{../../figures/}{../../results/}{../../results/pm25/}}
+
+\definecolor{NavyInk}{HTML}{0F172A}
+\definecolor{AccentBlue}{HTML}{2563EB}
+\definecolor{SoftGrey}{HTML}{64748B}
+\definecolor{RowGrey}{HTML}{F1F5F9}
+
+\titleformat{\section}{\Large\bfseries\color{NavyInk}}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\large\bfseries\color{NavyInk}}{\thesubsection}{0.8em}{}
+\captionsetup{font={small},labelfont={bf,color=NavyInk}}
+\setlength{\parskip}{4pt}
+\setlength{\parindent}{0pt}
+\newcommand{\BF}{\mathrm{BF}}
+\newcommand{\pmf}{PM$_{2.5}$}
+\newcommand{\ugm}{$\mu$g/m$^{3}$}
+
+\title{\vspace{-1.2em}{\color{NavyInk}\bfseries\LARGE Bayesian Sample Size Determination for\\[2pt]
+Residential \pmf{} Exposure and Brain Structure}\\[6pt]
+{\large\color{SoftGrey} Required $n$ under the laboratory's Bayesian-Lasso pipeline: at least one brain\\ principal component significant on the residential \pmf{} exposure index}}
+\author{Amaru Ag\"uero}
+\date{August 23, 2026}
+
+\begin{document}
+\maketitle
+\vspace{-1.4em}
+
+\begin{abstract}
+\noindent How many participants are needed to link fine particulate air pollution to brain structure in our cohort? We simulated thousands of complete virtual studies and analysed each one exactly as the laboratory will analyse the real data: a Bayesian Lasso regression that searches, across twenty brain components plus age, for at least one component related to the residential \pmf{} exposure index, in either direction. The virtual data are realistic on both sides: exposure values are drawn from the actual long-term \pmf{} concentrations of the participants' residential comunas (ACAG satellite product, 2013--2022; $540$ participants across $52$ comunas, mean $24.3$, SD $3.2$ \ugm), and brain measures reproduce the variability of our own DKT cortical-thickness data. The required sample size is the smallest $n$ at which at least $80\%$ of the virtual studies succeed. The answer: $n=42$ suffices when the exposure--brain link is strong ($\rho=0.5$), $n=75$ when it is moderately strong ($\rho=0.4$), and $n=142$ when it is moderate ($\rho=0.3$); if the signal is spread over two brain components, $n=78$. We also report the posterior standardized $\beta$ that a reader interprets: the Lasso shrinks it to roughly $64$--$77\%$ of its true value, so published effect sizes from this pipeline are conservative. Applying the same logic to Cohort 2 (MCI vs.\ controls, with the \pmf{} exposure included in the model), $42$ per group detect large group differences ($d=0.8$) and $26$ per group suffice for $d=1.0$. Given the modest exposure--brain effects reported in the air-pollution literature and the limited exposure contrast within one metropolitan area, the moderate-effect scenarios should be treated as the realistic planning range.
+\end{abstract}
+
+\section{Introduction}
+
+Fine particulate matter (\pmf) is an established neurotoxic exposure: chronic inhalation is linked to accelerated cognitive decline, structural brain differences and dementia risk, plausibly through neuroinflammatory and cerebrovascular pathways. Santiago's metropolitan region combines high average concentrations with a strong west--east gradient, so a cohort recruited across its comunas carries a real, measurable exposure contrast. This report asks the design question for the exposure arm of the study: \emph{what sample size $n$ yields, with probability $\ge0.80$, that at least one brain principal component is significant on the residential \pmf{} exposure index, in a two-sided sense (its $95\%$ credible interval excludes zero), under the laboratory's Bayesian-Lasso pipeline?}
+
+The analysis mirrors the laboratory's practice: the exposure index is regressed on the full set of brain principal components plus age with the hierarchical Bayesian Lasso used by the group (the JAGS \texttt{model\_string\_Lasso}), and a study succeeds when any brain component is credibly associated with the exposure. Section~2 describes the exposure calibration, the choice of a scalar exposure index, the generative model, the analysis model and detection criterion; Section~3 reports the required $n$, the recovery of the posterior standardized $\beta$, the sensitivity analyses, and Cohort 2; Section~4 states the conclusions.
+
+\section{Methods}
+
+\subsection{Exposure calibration and the scalar-vs-component decision}
+
+\textbf{Exposure assignment.} Each participant's long-term exposure is the 2013--2022 mean \pmf{} concentration of their residential comuna from the ACAG satellite-derived surface (annual communal series, 346 comunas). After normalising comuna names in the recruitment database, $540$ of $601$ valid records were assigned an exposure, spanning $52$ comunas. The resulting participant-level distribution has mean $24.3$ \ugm{}, SD $3.2$, range $12.7$--$27.8$ and skewness $-1.08$: most participants live in high-exposure Santiago comunas (Estación Central, Lo Prado, Quinta Normal, Macul $\approx27.5$--$27.8$), with a thinner low-exposure tail from residents of Las Condes, Vitacura, Lo Barnechea and a few participants outside the metropolitan region (Figure~\ref{fig:calib}A--B).
+
+\textbf{Scalar rather than a principal component.} The exposure repository provides several candidate metrics per comuna: long-term mean, average peak level, hours above $50$ \ugm{}, cumulative dose above $50$, and episode counts. At the comuna level these metrics correlate $0.82$--$0.95$ (Figure~\ref{fig:calib}C): they form essentially one dimension, so a first principal component of them would carry over $90\%$ of their variance while adding no information and losing the direct per-\ugm{} reading. We therefore use the \textbf{scalar long-term mean} as the exposure index, standardized within the cohort; effect sizes $\rho$ below are per SD of exposure ($1$ SD $=3.2$ \ugm{} in this cohort).
+
+\begin{figure}[H]
+\centering\includegraphics[width=\textwidth]{Fig_calibracion_pm25.png}
+\caption{\pmf{} exposure calibration. (A) Participant-level long-term exposure distribution. (B) Main recruitment comunas. (C) Candidate exposure metrics are near-collinear at the comuna level, justifying the scalar index.}
+\label{fig:calib}
+\end{figure}
+
+\textbf{Brain components.} As in the hormonal analysis of this project, the brain side is calibrated from the laboratory's DKT-atlas cortical-thickness data restricted to the 40--55-year window ($54$ participants $\times$ 62 ROIs): PC1 carries $60.4\%$ of the variance (global thickness) and correlates with age at $r=-0.171$; components 1--10 explain $86.8\%$, 1--14 $90.8\%$ and 1--20 $94.7\%$. The primary simulation retains $K=20$ components (the laboratory's ICA default), with $K=14$, $10$ and $5$ as sensitivity analyses.
+
+\subsection{Generative model (Cohort 1)}
+
+For each simulated participant $i=1,\dots,n$, with standardized age $a_i\sim\mathcal{N}(0,1)$:
+\begin{align}
+\mathrm{PCb}_{i1} &= c_b\, a_i + \sqrt{1-c_b^{2}}\;e_{i1}, \qquad c_b=-0.17,\nonumber\\
+\mathrm{PCb}_{ij} &\sim \mathcal{N}(0,1) \quad j=2,\dots,K,\\[2pt]
+y_i &= \textstyle\sum_{j\in\mathcal{T}} \rho\,\mathrm{PCb}_{ij}
+\;+\; \sqrt{1-|\mathcal{T}|\rho^{2}}\;\varepsilon_i,
+\qquad \varepsilon_i\sim\mathcal{N}(0,1),
+\end{align}
+where $y$ is the standardized \pmf{} exposure index and $\mathcal{T}$ indexes the truly associated brain component(s) with standardized effect $\rho$ each. Unlike the hormonal index, the exposure has no age dependence in the cohort database, so its age coefficient is set to zero; age still enters the design matrix as a covariate because the first brain component is age-related. The true components are never the age-related first component. Scenarios: one true component with $\rho\in\{0.2,0.3,0.4,0.5\}$; two true components with $\rho=0.3$ each; and the global null.
+
+\subsection{Analysis model, detection criterion, and reported coefficient}
+
+Each simulated dataset is analysed with the laboratory's hierarchical Bayesian Lasso, with $y$ = exposure index and design matrix $[\mathrm{PCb}_{1},\dots,\mathrm{PCb}_{K},\ a]$, all $p=K{+}1$ predictors penalized:
+\begin{equation}
+y_i \sim \mathcal{N}\!\bigl(\beta_0 + \mathbf{x}_i^{\top}\boldsymbol\beta,\ \sigma^2\bigr),\quad
+\beta_0\sim\mathcal{N}(0,10^2),\quad \sigma^2\sim\text{Inv-Gamma}(0.01,0.01),
+\end{equation}
+\begin{equation}
+\beta_j\mid\sigma^2,\tau_j^2 \sim \mathcal{N}(0,\sigma^2\tau_j^2),\quad
+\tau_j^2\sim\text{Exp}(\lambda^2/2),
+\qquad
+\lambda = p\,\sqrt{\widehat{\mathrm{Var}}(\text{OLS residuals})}\Big/\sum_j|\hat\beta_j^{\mathrm{OLS}}| .
+\end{equation}
+A brain component is significant when its equal-tailed $95\%$ credible interval excludes zero, in either direction; a study is a \emph{success} when at least one of the $K$ brain components is significant, and $n^{*}$ is the smallest $n$ with success probability $\ge0.80$. The family-wise false-detection rate under the global null is reported alongside. We additionally evaluate the quantity a reader interprets, the posterior standardized $\beta$ of the associated component (population value $=\rho$ by construction): posterior mean, $95\%$ credible interval, shrinkage factor, coverage, and the probability that the largest posterior $|\beta|$ belongs to the truly associated component. As a complementary evidence scale, the default JZS Bayes factor on each component's partial correlation (controls: remaining components + age; $m=n-K$) defines success at thresholds $\BF_{10}\ge4$, $6$, $10$. The batched exact Gibbs sampler and its verification against a scalar reference implementation and analytic Bayes factors are as described previously for this project ($400$ datasets per grid cell; $1{,}200$ for the $\beta$-recovery scenarios; $3{,}000$ iterations, $800$ burn-in).
+
+\subsection{Cohort 2 (MCI vs.\ HC, with the exposure in the model)}
+
+Cohort 2 follows the same logic with the group indicator as response: $y$ = standardized balanced group label (age-matched groups), design $=[\mathrm{PCb}_{1},\dots,\mathrm{PCb}_{20},\ \mathrm{PM}_{2.5},\ a]$, all penalized. One truly discriminating brain component carries an MCI--HC separation of Cohen's $d\in\{0.5,0.65,0.8,1.0\}$; the \pmf{} exposure enters with an optional MCI--HC separation $d_h\in\{0,0.3\}$ (plausible if cases and controls differ in residential exposure histories). The success criterion is unchanged: at least one \emph{brain} component with $95\%$ CrI excluding zero; the significance of the exposure coefficient is tracked separately.
+
+\section{Results}
+
+\subsection{Cohort 1: required $n$}
+
+\begin{table}[H]
+\centering\small
+\caption{Required $n$ for $P(\ge1$ brain component significant$)\ge0.80$ ($K=20$; two-sided $95\%$ CrI). ``n.a.'' = not attainable with $n\le160$.}
+\label{tab:nreq}
+\begin{tabular}{lr}
+\toprule
+Scenario & Required $n$\\
+\midrule
+One component, $\rho=0.2$ & n.a.\\
+\rowcolor{RowGrey}
+One component, $\rho=0.3$ & \textbf{142}\\
+\rowcolor{RowGrey}
+One component, $\rho=0.4$ & \textbf{75}\\
+One component, $\rho=0.5$ & 42\\
+Two components, $\rho=0.3$ each & \textbf{78}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering\small
+\caption{Operating characteristics at $n=60$ and $n=72$ ($K=20$, one true component). ``Any'' = design criterion; ``true'' = the truly associated component is among the significant ones.}
+\label{tab:opera}
+\begin{tabular}{crrrr}
+\toprule
+ & \multicolumn{2}{c}{$n=60$} & \multicolumn{2}{c}{$n=72$}\\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+True effect $\rho$ & any & true & any & true\\
+\midrule
+0.2 & 0.295 & 0.133 & 0.290 & 0.150\\
+0.3 & 0.485 & 0.355 & 0.517 & 0.435\\
+0.4 & 0.728 & 0.685 & 0.785 & 0.743\\
+0.5 & \textbf{0.917} & \textbf{0.915} & \textbf{0.935} & \textbf{0.935}\\
+\midrule
+$0$ (global null) & \multicolumn{2}{l}{family-wise: 0.185} & \multicolumn{2}{l}{0.168}\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Four findings summarize the analysis. First, under the laboratory's own criterion a sample of $n=60$ reaches a detection probability of $0.728$ for a single associated component of $\rho=0.4$ and $0.917$ for $\rho=0.5$; the $0.80$ target at $\rho=0.4$ is attained at $n^{*}=75$, and $\rho=0.5$ requires only $n^{*}=42$. Second, a moderate single-component effect of $\rho=0.3$, which is the magnitude most often reported for air-pollution effects on brain structure, requires $n^{*}=142$, and $\rho=0.2$ is not attainable within $n\le160$; however, if the exposure signal is spread over \emph{two} brain components of $\rho=0.3$ each, a plausible scenario for a diffuse environmental insult, the requirement drops to $n^{*}=78$ ($0.71$ at $n=60$, $0.78$ at $n=72$). Third, the family-wise false-detection rate of the criterion under the global null is non-trivial because twenty components are tested jointly: it is $0.24$ at $n=40$ and $0.185$ to $0.168$ at $n=60$ to $72$, with on average $0.2$ falsely selected components per dataset; accordingly, Table~\ref{tab:opera} also reports the probability that the \emph{true} component is detected, and the conclusions recommend stability checks for any single-component claim. Fourth, the results are robust to the number of retained components (Table~\ref{tab:sens}): across $K\in\{5,10,14,20\}$ the required $n$ spans only 71 to 75 at $\rho=0.4$ and 128 to 142 at $\rho=0.3$, while the family-wise rate falls sharply with fewer components (from $0.168$ at $K=20$ to $0.043$ at $K=5$, at $n=72$).
+
+\begin{figure}[H]
+\centering\includegraphics[width=\textwidth]{pm25/Fig_lasso_n_requerido.png}
+\caption{Required $n$ under the laboratory criterion for the \pmf{} exposure index. (A) Probability that at least one brain component is significant, by true effect size. (B) Family-wise false detection under the global null and correct-component detection. (C) Sensitivity to $K$. (D) One vs.\ two associated components.}
+\label{fig:lasso}
+\end{figure}
+
+\subsection{Posterior standardized $\beta$ of the associated component}
+
+\begin{table}[H]
+\centering\small
+\caption{Recovery of the posterior standardized $\beta$ ($K=20$ plus age; $1{,}200$ simulated studies per scenario). Effects are per SD of exposure ($3.2$ \ugm{}).}
+\label{tab:beta}
+\begin{tabular}{ccrrrrr}
+\toprule
+$n$ & True $\beta$ & Posterior $\beta$ & Shrinkage & Median 95\% CrI & Coverage & Selects true\\
+\midrule
+60 & 0.30 & 0.192 & 0.64 & $[-0.02,\ 0.42]$ & 0.82 & 0.55\\
+72 & 0.30 & 0.192 & 0.64 & $[-0.01,\ 0.40]$ & 0.79 & 0.62\\
+100 & 0.30 & 0.205 & 0.68 & $[0.01,\ 0.39]$ & 0.79 & 0.76\\
+134 & 0.30 & 0.214 & 0.71 & $[0.05,\ 0.37]$ & 0.78 & 0.88\\
+\rowcolor{RowGrey}
+60 & 0.40 & 0.280 & 0.70 & $[0.04,\ 0.51]$ & 0.79 & 0.79\\
+\rowcolor{RowGrey}
+72 & 0.40 & 0.294 & 0.74 & $[0.07,\ 0.51]$ & 0.81 & 0.87\\
+60 & 0.50 & 0.385 & 0.77 & $[0.15,\ 0.61]$ & 0.80 & 0.95\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Three properties of the reported coefficient follow (Figure~\ref{fig:beta}). First, the Lasso prior shrinks the posterior $\beta$ towards zero: at $n=60$ the posterior mean recovers $64\%$ of a true $\beta=0.3$, $70\%$ of $0.4$ and $77\%$ of $0.5$, and for $\beta=0.3$ the factor climbs to $0.71$ at $n=134$. Published effect sizes from this pipeline are therefore conservative by construction: an estimated $\beta$ of $0.2$ per SD of exposure ($3.2$ \ugm{}) is compatible with a true effect near $0.3$. Second, as a direct consequence, the nominal $95\%$ credible interval covers the true value about $79\%$ of the time; the interval is calibrated for the shrunk posterior, not for the unshrunk parameter, which argues for reporting the interval together with the shrinkage factor. Third, precision and attribution improve steadily with $n$: the median interval width falls from $0.43$ at $n=60$ to $0.32$ at $n=134$ for $\beta=0.3$, and the probability that the largest posterior coefficient belongs to the truly associated component rises from $0.55$ to $0.88$ over the same range, already reaching $0.79$ at $n=60$ when $\beta=0.4$.
+
+\begin{figure}[H]
+\centering\includegraphics[width=\textwidth]{pm25/Fig_beta_posterior.png}
+\caption{Posterior standardized $\beta$ of the \pmf-related brain component. (A) Distribution of the posterior mean across studies. (B) Shrinkage and coverage. (C) Median $95\%$ credible intervals (circle: posterior mean; tick: true $\beta$).}
+\label{fig:beta}
+\end{figure}
+
+\subsection{Sensitivity: number of components and Bayes-factor thresholds}
+
+\begin{table}[H]
+\centering\small
+\caption{Left: sensitivity of the required $n$ to the number of retained components (Lasso-CrI criterion; family-wise rate under the null at $n=72$). Right: required $n$ when success demands $\ge1$ component with $\BF_{10}$ above a threshold ($K=20$).}
+\label{tab:sens}
+\begin{tabular}{lrrr}
+\toprule
+Components & $n^{*}$, $\rho=0.3$ & $n^{*}$, $\rho=0.4$ & FW rate\\
+\midrule
+$K=5$ & 128 & 71 & 0.043\\
+$K=10$ & 136 & 72 & 0.077\\
+$K=14$ (90\% var.) & 137 & 74 & 0.113\\
+\rowcolor{RowGrey}
+$K=20$ (lab ICA) & 142 & 75 & 0.168\\
+\bottomrule
+\end{tabular}
+\hspace{0.8cm}
+\begin{tabular}{crrr}
+\toprule
+$\rho$ & $\BF\ge4$ & $\BF\ge6$ & $\BF\ge10$\\
+\midrule
+0.3 & n.a. & n.a. & n.a.\\
+0.4 & 92 & 99 & 109\\
+0.5 & 63 & 68 & 73\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The Lasso criterion is stable across the retained dimensionality: moving from $K=20$ to $K=5$ changes the required $n$ by less than ten participants at either effect size, while the family-wise false-detection rate under the null falls from $0.168$ to $0.043$, an argument for prespecifying a reduced component set. Requiring component-level Bayes factors instead of credible intervals buys specificity at a quantified price: at $\rho=0.4$ the required $n$ rises from 75 (CrI criterion) to 92, 99 and 109 for $\BF_{10}>4$, $6$ and $10$; at $\rho=0.5$ the corresponding requirements are 63, 68 and 73.
+
+\begin{figure}[H]
+\centering\includegraphics[width=\textwidth]{pm25/Fig_lasso_K_BF.png}
+\caption{Sensitivity analyses for the \pmf{} exposure. (A) Bayes-factor thresholds $4/6/10$ ($K=20$). (B) Required $n$ by number of retained components.}
+\label{fig:kbf}
+\end{figure}
+
+\subsection{Cohort 2: MCI vs.\ HC with the exposure in the model}
+
+\begin{table}[H]
+\centering\small
+\caption{Cohort 2 (Bayesian Lasso on $20$ brain components + \pmf{} exposure + age; success = $\ge1$ brain component with $95\%$ CrI excluding 0; no exposure group effect, $d_h=0$). ``n.a.'' = not attainable with $n\le80$ per group.}
+\label{tab:c2}
+\begin{tabular}{lrrrr}
+\toprule
+MCI--HC separation (1 component) & $d=0.50$ & $d=0.65$ & $d=0.80$ & $d=1.00$\\
+\midrule
+Required $n$ per group & n.a. & 70 & \textbf{42} & \textbf{26}\\
+\rowcolor{RowGrey}
+$P(\ge1)$ at $30$/group & 0.350 & 0.468 & 0.632 & \textbf{0.875}\\
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}
+{\footnotesize Family-wise false detection under the global null: $0.168$ at $30$/group, $0.185$ at $40$/group; false significance of the \pmf{} exposure coefficient when it has no group effect: $\approx0.01$.}
+\end{table}
+
+Under the pipeline criterion, $30$ per group reaches $0.632$ at $d=0.8$ and $0.875$ at $d=1.0$; securing the $0.80$ target at $d=0.8$ requires $42$ per group ($26$ per group suffice at $d=1.0$, while $d=0.65$ requires $70$). Regarding the \pmf{} exposure itself: its inclusion in the model costs essentially nothing (its false-significance rate is $\approx1\%$), but a small MCI--HC exposure difference ($d_h=0.3$, about $1$ \ugm{} between groups) is rarely detected at these sample sizes ($P\le0.20$ up to $80$ per group; Figure~\ref{fig:c2}B), so exposure group effects in Cohort 2 should be framed as exploratory rather than confirmatory.
+
+\begin{figure}[H]
+\centering\includegraphics[width=\textwidth]{pm25/Fig_lasso_cohorte2.png}
+\caption{Cohort 2 under the laboratory Lasso criterion with the \pmf{} exposure in the model. (A) Probability that at least one brain component separates MCI from HC. (B) Probability that the exposure coefficient is significant when the true MCI--HC exposure separation is $d_h=0.3$.}
+\label{fig:c2}
+\end{figure}
+
+\section{Conclusion}
+
+Under the laboratory's actual analysis pipeline, a Bayesian Lasso regressing the standardized residential \pmf{} exposure index on twenty brain principal components plus age, with success defined as at least one brain component whose $95\%$ credible interval excludes zero in either direction, the required sample sizes are: $n^{*}=42$ for a strong single-component effect ($\rho=0.5$), $n^{*}=75$ for $\rho=0.4$, and $n^{*}=142$ for $\rho=0.3$; with two associated components of $\rho=0.3$ each, $n^{*}=78$. A sample of $n=60$ is adequate for strong effects ($0.92$ at $\rho=0.5$, $0.73$ at $\rho=0.4$) and $n=72$ secures the $0.80$ target at $\rho=0.4$. The air-pollution neuroimaging literature, however, mostly reports standardized effects near $0.2$ to $0.3$ per SD of long-term exposure, and the exposure contrast within a single metropolitan area (SD $3.2$ \ugm{} in this cohort) is modest. The moderate scenario should therefore anchor the planning: detecting one $\rho=0.3$ component demands roughly $142$ participants, while the distributed two-component scenario, arguably the most realistic for a diffuse environmental insult, is secured with $n^{*}=78$.
+
+Two practical advantages of the exposure arm follow. First, the exposure index costs nothing per participant: it is reconstructed from the residential comuna, and $540$ of the $601$ current records already carry an assigned exposure across $52$ comunas, so the binding constraint is imaging, not exposure assessment. A nested design that adds structural MRI to approximately $142$ georeferenced participants would power the moderate single-component scenario, while the full multimodal protocol is retained in a $60$ to $72$ participant core. Second, recruitment can actively widen the exposure contrast: oversampling residents of low-exposure comunas (Las Condes, Vitacura, Lo Barnechea) and of comunas outside the metropolitan region would raise the exposure SD above $3.2$ \ugm{} and make every tabulated scenario easier to reach.
+
+Reported effect sizes deserve the same caveat as any Lasso output: the posterior standardized $\beta$ is shrunk to roughly $64$ to $77\%$ of its true value and its nominal $95\%$ interval covers the truth about $79\%$ of the time, so published magnitudes are conservative. Because the ``at least one component'' criterion carries a family-wise false-detection rate near $0.17$ at the planning sample sizes, a positive finding should be accompanied by per-component posterior summaries and stability checks, or by the stricter Bayes-factor thresholds of Table~\ref{tab:sens}, which raise the requirement at $\rho=0.4$ to 92 to 109 participants. Cohort 2 was dimensioned under the same logic with the exposure in the model: $26$ per group for $d=1.0$, $42$ per group for $d=0.8$ and $70$ per group for $d=0.65$, with exposure group differences detectable only as exploratory signals. Overall, $n=72$ powers the optimistic single-component scenario and the distributed scenario, and roughly $142$ georeferenced participants with MRI are the route to the literature-typical effect size.
+
+\section{Reproducibility}
+
+All computations use fixed seeds. The engine is \texttt{bfda\_lasso\_multivariante.py} with the flag \texttt{--predictor pm25} (plus \texttt{--extra}, \texttt{--beta-posterior}, \texttt{--cohorte2} for the corresponding sections); outputs land in \texttt{results/pm25/}. Calibration inputs: \texttt{data/calibracion\_pm25.csv} (participant-level residential exposure, built from \texttt{pm25\_anual\_comunal\_acag.csv} and the recruitment database) and \texttt{data/calibracion\_dkt\_eigenvalues.csv}.
+
+\begin{thebibliography}{9}\small
+\bibitem{park2008} Park, T., \& Casella, G. (2008). The Bayesian Lasso. \emph{Journal of the American Statistical Association, 103}(482), 681--686.
+\bibitem{schoenbrodt2018} Sch\"onbrodt, F.\,D., \& Wagenmakers, E.-J. (2018). Bayes factor design analysis: Planning for compelling evidence. \emph{Psychonomic Bulletin \& Review, 25}(1), 128--142.
+\bibitem{wetzels2012} Wetzels, R., \& Wagenmakers, E.-J. (2012). A default Bayesian hypothesis test for correlations and partial correlations. \emph{Psychonomic Bulletin \& Review, 19}(6), 1057--1064.
+\bibitem{vandonkelaar} van Donkelaar, A., et al. Monthly global estimates of fine particulate matter and their uncertainty. \emph{Environmental Science \& Technology} (ACAG surface \pmf{} product).
+\end{thebibliography}
+
+\end{document}
