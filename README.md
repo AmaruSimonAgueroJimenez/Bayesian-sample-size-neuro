@@ -1,4 +1,4 @@
-# bayesian-sample-size-neuro
+# Bayesian-sample-size-neuro
 
 Bayesian sample size determination (Bayes Factor Design Analysis, BFDA) for two
 neuroimaging cohort studies:
