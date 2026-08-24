@@ -1,0 +1,13 @@
+{
+  "criterio": "P(>=1 PC cerebral con CrI 95% excluyendo 0, bilateral) >= target, lasso bayesiano y=PC1 hormonal ~ PCs cerebro + edad",
+  "target": 0.8,
+  "n_requerido": {
+    "K20_true1_rho0.2": null,
+    "K20_true1_rho0.3": 142.0,
+    "K20_true1_rho0.4": 75.0,
+    "K20_true1_rho0.5": 42.0,
+    "K10_true1_rho0.3": 136.0,
+    "K10_true1_rho0.4": 72.0,
+    "K20_true2_rho0.3": 78.0
+  }
+}
