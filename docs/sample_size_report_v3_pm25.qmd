@@ -52,7 +52,7 @@ Each simulated dataset is analysed with the laboratory's hierarchical Bayesian L
 \beta_0\sim\mathcal{N}(0,10^2),\quad \sigma^2\sim\text{Inv-Gamma}(0.01,0.01),$$ $$\beta_j\mid\sigma^2,\tau_j^2 \sim \mathcal{N}(0,\sigma^2\tau_j^2),\quad
 \tau_j^2\sim\text{Exp}(\lambda^2/2),
 \qquad
-\lambda = p\,\sqrt{\widehat{\mathrm{Var}}(\text{OLS residuals})}\Big/\sum_j|\hat\beta_j^{\mathrm{OLS}}| .$$ A brain component is significant when its equal-tailed $95\%$ credible interval excludes zero, in either direction; a study is a *success* when at least one of the $K$ brain components is significant, and $n^{*}$ is the smallest $n$ with success probability $\ge0.80$. The family-wise false-detection rate under the global null is reported alongside. We additionally evaluate the quantity a reader interprets, the posterior standardized $\beta$ of the associated component (population value $=\rho$ by construction): posterior mean, $95\%$ credible interval, shrinkage factor, coverage, and the probability that the largest posterior $|\beta|$ belongs to the truly associated component. As a complementary evidence scale, the default JZS Bayes factor on each component's partial correlation (controls: remaining components + age; $m=n-K$) defines success at thresholds $\mathrm{BF}_{10}\ge4$, $6$, $10$. The batched exact Gibbs sampler and its verification against a scalar reference implementation and analytic Bayes factors are as described previously for this project ($400$ datasets per grid cell; $1{,}200$ for the $\beta$-recovery scenarios; $3{,}000$ iterations, $800$ burn-in).
+\lambda = p\,\sqrt{\widehat{\mathrm{Var}}(\text{OLS residuals})}\Big/\sum_j|\hat\beta_j^{\mathrm{OLS}}| .$$ A brain component is significant when its equal-tailed $95\%$ credible interval excludes zero, in either direction; a study is a *success* when at least one of the $K$ brain components is significant, and $n^{*}$ is the smallest $n$ with success probability $\ge0.80$. The family-wise false-detection rate under the global null is reported alongside. We additionally evaluate the quantity a reader interprets, the posterior standardized $\beta$ of the associated component (population value $=\rho$ by construction): posterior mean, $95\%$ credible interval, shrinkage factor, coverage, and the probability that the largest posterior $|\beta|$ belongs to the truly associated component. As a complementary evidence scale, the default JZS Bayes factor on each component's partial correlation (controls: remaining components + age; $m=n-K$) defines success at thresholds $\mathrm{BF}_{H_1/H_0}\ge4$, $6$, $10$. The batched exact Gibbs sampler and its verification against a scalar reference implementation and analytic Bayes factors are as described previously for this project ($400$ datasets per grid cell; $1{,}200$ for the $\beta$-recovery scenarios; $3{,}000$ iterations, $800$ burn-in).
 
 ## Cohort 2 (MCI vs. HC, with the exposure in the model)
 
@@ -121,7 +121,7 @@ Three properties of the reported coefficient follow (Figure [3](#fig:beta){refe
 | $K=14$ (90% var.) |                 137 |                  74 |   0.113 |
 | $K=20$ (lab ICA)  |                 142 |                  75 |   0.168 |
 
-: Left: sensitivity of the required $n$ to the number of retained components (Lasso-CrI criterion; family-wise rate under the null at $n=72$). Right: required $n$ when success demands $\ge1$ component with $\mathrm{BF}_{10}$ above a threshold ($K=20$).
+: Left: sensitivity of the required $n$ to the number of retained components (Lasso-CrI criterion; family-wise rate under the null at $n=72$). Right: required $n$ when success demands $\ge1$ component with $\mathrm{BF}_{H_1/H_0}$ above a threshold ($K=20$).
 :::
 
 ::: {#tab:sens}
@@ -131,12 +131,14 @@ Three properties of the reported coefficient follow (Figure [3](#fig:beta){refe
 |  0.4   |                92 |                99 |                109 |
 |  0.5   |                63 |                68 |                 73 |
 
-: Left: sensitivity of the required $n$ to the number of retained components (Lasso-CrI criterion; family-wise rate under the null at $n=72$). Right: required $n$ when success demands $\ge1$ component with $\mathrm{BF}_{10}$ above a threshold ($K=20$).
+: Left: sensitivity of the required $n$ to the number of retained components (Lasso-CrI criterion; family-wise rate under the null at $n=72$). Right: required $n$ when success demands $\ge1$ component with $\mathrm{BF}_{H_1/H_0}$ above a threshold ($K=20$).
 :::
 
-The Lasso criterion is stable across the retained dimensionality: moving from $K=20$ to $K=5$ changes the required $n$ by less than ten participants at either effect size, while the family-wise false-detection rate under the null falls from $0.168$ to $0.043$, an argument for prespecifying a reduced component set. Requiring component-level Bayes factors instead of credible intervals buys specificity at a quantified price: at $\rho=0.4$ the required $n$ rises from 75 (CrI criterion) to 92, 99 and 109 for $\mathrm{BF}_{10}>4$, $6$ and $10$; at $\rho=0.5$ the corresponding requirements are 63, 68 and 73.
+The Lasso criterion is stable across the retained dimensionality: moving from $K=20$ to $K=5$ changes the required $n$ by less than ten participants at either effect size, while the family-wise false-detection rate under the null falls from $0.168$ to $0.043$, an argument for prespecifying a reduced component set. Requiring component-level Bayes factors instead of credible intervals buys specificity at a quantified price: at $\rho=0.4$ the required $n$ rises from 75 (CrI criterion) to 92, 99 and 109 for $\mathrm{BF}_{H_1/H_0}>4$, $6$ and $10$; at $\rho=0.5$ the corresponding requirements are 63, 68 and 73.
 
 ![Sensitivity analyses for the PM$_{2.5}$ exposure. (A) Bayes-factor thresholds $4/6/10$ ($K=20$). (B) Required $n$ by number of retained components.](../results/pm25/Fig_lasso_K_BF.png){#fig:kbf width="100%"}
+
+![Cohort 1 in 3D: probability that at least one brain component clears the per-component $\mathrm{BF}_{H_1/H_0}$ threshold, over sample size and threshold, one surface per true effect $\rho$ ($K=20$). The vertical posts mark $n=60$ at the reference thresholds $\mathrm{BF}_{H_1/H_0}=3$ and $10$.](../results/pm25/Fig_3D_BF_lasso_c1.png){#fig:tresd_c1 width="92%"}
 
 ## Cohort 2: MCI vs. HC with the exposure in the model
 
@@ -151,9 +153,11 @@ The Lasso criterion is stable across the retained dimensionality: moving from $K
 
 Family-wise false detection under the global null: $0.168$ at $30$/group, $0.185$ at $40$/group; false significance of the PM$_{2.5}$ exposure coefficient when it has no group effect: $\approx0.01$.
 
-Under the pipeline criterion, $30$ per group reaches $0.632$ at $d=0.8$ and $0.875$ at $d=1.0$; securing the $0.80$ target at $d=0.8$ requires $42$ per group ($26$ per group suffice at $d=1.0$, while $d=0.65$ requires $70$). Regarding the PM$_{2.5}$ exposure itself: its inclusion in the model costs essentially nothing (its false-significance rate is $\approx1\%$), but a small MCI--HC exposure difference ($d_h=0.3$, about $1$ $\mu$g/m$^{3}$ between groups) is rarely detected at these sample sizes ($P\le0.20$ up to $80$ per group; Figure [5](#fig:c2){reference-type="ref" reference="fig:c2"}B), so exposure group effects in Cohort 2 should be framed as exploratory rather than confirmatory.
+Under the pipeline criterion, $30$ per group reaches $0.632$ at $d=0.8$ and $0.875$ at $d=1.0$; securing the $0.80$ target at $d=0.8$ requires $42$ per group ($26$ per group suffice at $d=1.0$, while $d=0.65$ requires $70$). Regarding the PM$_{2.5}$ exposure itself: its inclusion in the model costs essentially nothing (its false-significance rate is $\approx1\%$), but a small MCI--HC exposure difference ($d_h=0.3$, about $1$ $\mu$g/m$^{3}$ between groups) is rarely detected at these sample sizes ($P\le0.20$ up to $80$ per group; Figure [6](#fig:c2){reference-type="ref" reference="fig:c2"}B), so exposure group effects in Cohort 2 should be framed as exploratory rather than confirmatory.
 
 ![Cohort 2 under the laboratory Lasso criterion with the PM$_{2.5}$ exposure in the model. (A) Probability that at least one brain component separates MCI from HC. (B) Probability that the exposure coefficient is significant when the true MCI--HC exposure separation is $d_h=0.3$.](../results/pm25/Fig_lasso_cohorte2.png){#fig:c2 width="100%"}
+
+![Cohort 2 in 3D: probability that at least one brain component clears the per-component $\mathrm{BF}_{H_1/H_0}$ threshold, over $n$ per group and the threshold, one surface per MCI--HC separation $d$ ($K=5$, exposure in the model). Vertical posts mark $36$ per group at $\mathrm{BF}_{H_1/H_0}=3$ and $10$.](../results/pm25/Fig_3D_BF_lasso_c2.png){#fig:tresd_c2 width="92%"}
 
 # Conclusion
 

@@ -31,13 +31,17 @@ regressing the hormonal PC1 on twenty brain principal components plus age;
 success is at least one brain component whose 95% credible interval excludes
 zero. Includes recovery of the posterior standardized $\beta$, sensitivity to
 the number of components and to Bayes-factor thresholds, and Cohort 2.
+Includes a fixed-design addendum (probability of recovering an MCI--HC
+effect of $d=0.65$--$0.70$ at $n=36$ per group) and 3-D power surfaces over
+the $BF_{H_1/H_0}$ evidence threshold.
 
 [**Version 4: global-model Bayes factor (conditional MVG)**](sample_size_report_v4.html)
 Required $N$ under a permutation-marginalized conditional multivariate Gaussian
 generator: a global effect $R^2$ is split at random across components and
 evidence is the Bayes factor of the full regression against the null
 (equivalent to `BayesFactor::regressionBF`). Includes Cohort 2 with the
-hormonal PC1 in the model.
+hormonal PC1 in the model. Includes the multivariate fixed-design addendum
+at $n=36$ per group and 3-D power surfaces over the $BF_{H_1/H_0}$ threshold.
 
 ### PM$_{2.5}$ exposure arm (residential model surface, 2013--2022)
 

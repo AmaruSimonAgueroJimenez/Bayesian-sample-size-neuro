@@ -6,7 +6,7 @@ author:
   - "Amaru Agüero"
 date: "August 21, 2026"
 abstract: |
-  This report asks how many participants are needed so that the *whole set* of brain principal components, taken jointly, provides strong Bayesian evidence of explaining the hormonal index of the menopausal transition. We simulate thousands of virtual studies in which real hormonal scores (standardized PC1 of FSH and estradiol, bootstrapped from the SWAN early-perimenopausal pool) are linked to synthetic brain components that carry the empirical eigenvalue spectrum of our DKT cortical-thickness data. A fixed global effect $R^{2}$ is split across components at random in every iteration, so no assumption is made about which component carries the signal, and evidence is the Bayes factor of the full regression model against the intercept-only null (the exact equivalent of `regressionBF` in R). Across the effect grid $R^{2}\in\{0.04,0.09,0.16,0.25\}$ and thresholds $\mathrm{BF}_{10}\ge4$, $6$ and $10$: with a compact set of five components, $R^{2}=0.25$ requires $N=68$--$81$, $R^{2}=0.16$ requires $N=125$--$139$ and $R^{2}=0.09$ requires $N=244$--$277$; with the laboratory's full twenty-component set the same effects require $149$--$163$, $277$--$294$, and more than $300$. An effect of $R^{2}=0.04$ is out of reach at any dimensionality. False positives stay below $1\%$ everywhere and vanish as $N$ grows. Applied to Cohort 2 (MCI vs. controls, with the hormonal component included in the model), a group separation of $R^{2}=0.25$ (Mahalanobis $D=1.16$) needs $36$--$41$ per group with five components and $74$--$82$ with twenty, while $R^{2}=0.16$ ($D=0.87$) needs $66$--$73$ and $140$--$148$ respectively; an accompanying hormonal MCI--HC difference shortens these requirements by about ten per group. Dimensionality, not the evidence threshold, is what drives the design: moving from $\mathrm{BF}\ge4$ to $\mathrm{BF}\ge10$ costs only $10$--$20$ participants, whereas going from five to twenty components can double or triple the requirement.
+  This report asks how many participants are needed so that the *whole set* of brain principal components, taken jointly, provides strong Bayesian evidence of explaining the hormonal index of the menopausal transition. We simulate thousands of virtual studies in which real hormonal scores (standardized PC1 of FSH and estradiol, bootstrapped from the SWAN early-perimenopausal pool) are linked to synthetic brain components that carry the empirical eigenvalue spectrum of our DKT cortical-thickness data. A fixed global effect $R^{2}$ is split across components at random in every iteration, so no assumption is made about which component carries the signal, and evidence is the Bayes factor of the full regression model against the intercept-only null (the exact equivalent of `regressionBF` in R). Across the effect grid $R^{2}\in\{0.04,0.09,0.16,0.25\}$ and thresholds $\mathrm{BF}_{H_1/H_0}\ge4$, $6$ and $10$: with a compact set of five components, $R^{2}=0.25$ requires $N=68$--$81$, $R^{2}=0.16$ requires $N=125$--$139$ and $R^{2}=0.09$ requires $N=244$--$277$; with the laboratory's full twenty-component set the same effects require $149$--$163$, $277$--$294$, and more than $300$. An effect of $R^{2}=0.04$ is out of reach at any dimensionality. False positives stay below $1\%$ everywhere and vanish as $N$ grows. Applied to Cohort 2 (MCI vs. controls, with the hormonal component included in the model), a group separation of $R^{2}=0.25$ (Mahalanobis $D=1.16$) needs $36$--$41$ per group with five components and $74$--$82$ with twenty, while $R^{2}=0.16$ ($D=0.87$) needs $66$--$73$ and $140$--$148$ respectively; an accompanying hormonal MCI--HC difference shortens these requirements by about ten per group. Dimensionality, not the evidence threshold, is what drives the design: moving from $\mathrm{BF}\ge4$ to $\mathrm{BF}\ge10$ costs only $10$--$20$ participants, whereas going from five to twenty components can double or triple the requirement.
 bibliography: references.bib
 lang: en
 format:
@@ -48,14 +48,14 @@ Let $\mathbf{X}_{\mathrm{pca}}\in\mathbb{R}^{p}$ denote the top $p$ principal co
 
 ## Evidence and computation
 
-Each simulated dataset is scored with the Bayes factor of the full Bayesian regression $\mathbf{y}_{\mathrm{emp}}\sim\mathbf{X}_{\mathrm{sim}}$ against the intercept-only null, using the default JZS mixture-of-$g$ prior [@liang2008; @rouder2012]: $$\mathrm{BF}_{10}\;=\;\int_0^{\infty}(1+g)^{\frac{N-p-1}{2}}\bigl[1+(1-\hat R^{2})g\bigr]^{-\frac{N-1}{2}}\,\pi(g)\,dg,
+Each simulated dataset is scored with the Bayes factor of the full Bayesian regression $\mathbf{y}_{\mathrm{emp}}\sim\mathbf{X}_{\mathrm{sim}}$ against the intercept-only null, using the default JZS mixture-of-$g$ prior [@liang2008; @rouder2012]: $$\mathrm{BF}_{H_1/H_0}\;=\;\int_0^{\infty}(1+g)^{\frac{N-p-1}{2}}\bigl[1+(1-\hat R^{2})g\bigr]^{-\frac{N-1}{2}}\,\pi(g)\,dg,
 \qquad
 \pi(g)=\frac{\sqrt{Ns^{2}/2}}{\Gamma(1/2)}\,g^{-3/2}e^{-Ns^{2}/(2g)},
-\tag{6}$$ with prior scale $s=\sqrt{2}/4$, the `BayesFactor::regressionBF` default ("medium"), so the Python engine reproduces the R reference implementation exactly, evaluated analytically. Empirical power and the required sample size are $$\mathrm{Power}(N,R^{2})=\frac{1}{M}\sum_{m=1}^{M}\mathbb{I}\bigl(\mathrm{BF}_{10}^{(m)}\ge\tau\bigr),
+\tag{6}$$ with prior scale $s=\sqrt{2}/4$, the `BayesFactor::regressionBF` default ("medium"), so the Python engine reproduces the R reference implementation exactly, evaluated analytically. Empirical power and the required sample size are $$\mathrm{Power}(N,R^{2})=\frac{1}{M}\sum_{m=1}^{M}\mathbb{I}\bigl(\mathrm{BF}_{H_1/H_0}^{(m)}\ge\tau\bigr),
 \qquad
 N^{*}=\min\{N:\ \mathrm{Power}(N,R^{2})\ge0.80\}.$$
 
-Because $\mathrm{BF}_{10}$ is monotone in the sample $\hat R^{2}$ for fixed $(N,p)$, the engine inverts (6) once per $(N,p,\tau)$ and evaluates power over $M=4{,}000$ simulated $\hat R^{2}$ values per cell (batched OLS). The integral was verified against independent adaptive quadrature (relative error $<10^{-10}$). Two further checks are worth noting. First, the false-positive rate $P(\mathrm{BF}_{10}\ge\tau\mid R^{2}=0)$ is monitored across the whole grid. Second, the permutation marginalization was verified to be *exactly* innocuous for this global criterion: by rotation invariance of the Gaussian generator, the distribution of $\hat R^{2}$ depends on $\boldsymbol\rho$ only through $\lVert\boldsymbol\rho\rVert^{2}=R^{2}$, so power is invariant to how the effect is split across components (empirical check: mean $\hat R^{2}$ of $0.2799$ permuted vs. $0.2784$ fixed at $N=100$, $R^{2}=0.10$, $K=20$). The paradigm is therefore alignment-free by construction, which is its design strength.
+Because $\mathrm{BF}_{H_1/H_0}$ is monotone in the sample $\hat R^{2}$ for fixed $(N,p)$, the engine inverts (6) once per $(N,p,\tau)$ and evaluates power over $M=4{,}000$ simulated $\hat R^{2}$ values per cell (batched OLS). The integral was verified against independent adaptive quadrature (relative error $<10^{-10}$). Two further checks are worth noting. First, the false-positive rate $P(\mathrm{BF}_{H_1/H_0}\ge\tau\mid R^{2}=0)$ is monitored across the whole grid. Second, the permutation marginalization was verified to be *exactly* innocuous for this global criterion: by rotation invariance of the Gaussian generator, the distribution of $\hat R^{2}$ depends on $\boldsymbol\rho$ only through $\lVert\boldsymbol\rho\rVert^{2}=R^{2}$, so power is invariant to how the effect is split across components (empirical check: mean $\hat R^{2}$ of $0.2799$ permuted vs. $0.2784$ fixed at $N=100$, $R^{2}=0.10$, $K=20$). The paradigm is therefore alignment-free by construction, which is its design strength.
 
 ## Parameter space
 
@@ -68,17 +68,17 @@ For the MCI vs. HC cohort the paradigm is applied with the group as response: $
 # Results
 
 ::: {#tab:v4}
-|      $K$      | Global effect | $\mathrm{BF}_{10}\ge4$ | $\mathrm{BF}_{10}\ge6$ | $\mathrm{BF}_{10}\ge10$ |
-|:-------------:|:--------------|-----------------------:|-----------------------:|------------------------:|
-|       5       | $R^2=0.09$    |                    244 |                    259 |                     277 |
-|       5       | $R^2=0.16$    |                **125** |                    132 |                     139 |
-|       5       | $R^2=0.25$    |                 **68** |                     72 |                      81 |
-|      10       | $R^2=0.16$    |                    176 |                    185 |                     194 |
-|      10       | $R^2=0.25$    |                     97 |                    103 |                     113 |
-| 14 (90% var.) | $R^2=0.16$    |                    219 |                    228 |                     239 |
-| 14 (90% var.) | $R^2=0.25$    |                    124 |                    129 |                     135 |
-| 20 (lab ICA)  | $R^2=0.16$    |                    277 |                    284 |                     294 |
-| 20 (lab ICA)  | $R^2=0.25$    |                    149 |                    153 |                     163 |
+|      $K$      | Global effect | $\mathrm{BF}_{H_1/H_0}\ge4$ | $\mathrm{BF}_{H_1/H_0}\ge6$ | $\mathrm{BF}_{H_1/H_0}\ge10$ |
+|:-------------:|:--------------|----------------------------:|----------------------------:|-----------------------------:|
+|       5       | $R^2=0.09$    |                         244 |                         259 |                          277 |
+|       5       | $R^2=0.16$    |                     **125** |                         132 |                          139 |
+|       5       | $R^2=0.25$    |                      **68** |                          72 |                           81 |
+|      10       | $R^2=0.16$    |                         176 |                         185 |                          194 |
+|      10       | $R^2=0.25$    |                          97 |                         103 |                          113 |
+| 14 (90% var.) | $R^2=0.16$    |                         219 |                         228 |                          239 |
+| 14 (90% var.) | $R^2=0.25$    |                         124 |                         129 |                          135 |
+| 20 (lab ICA)  | $R^2=0.16$    |                         277 |                         284 |                          294 |
+| 20 (lab ICA)  | $R^2=0.25$    |                         149 |                         153 |                          163 |
 
 : Required $N$ for $\mathrm{Power}\ge0.80$ under the global-model criterion, by number of components $K$, global effect $R^{2}$, and evidence threshold $\tau$. "n.a." = not attainable with $N\le300$.
 :::
@@ -98,31 +98,71 @@ $R^{2}=0.04$ is not attainable at any $K$ with $N\le300$; $R^{2}=0.09$ is attain
 
 Figure [1](#fig:v4){reference-type="ref" reference="fig:v4"} shows the full power surfaces. Three regularities emerge. First, under the global-model criterion the required $N$ is driven jointly by the effect size and the dimensionality: at $R^{2}=0.25$ the requirement grows from $68$--$81$ with five components to $149$--$163$ with the full laboratory set of twenty, and at $R^{2}=0.16$ from $125$--$139$ to $277$--$294$, because the JZS prior spreads its mass over all $p$ directions and the marginal likelihood pays for every dimension that carries no signal. Second, the evidence threshold matters much less than the dimensionality: moving from $\mathrm{BF}\ge4$ to $\mathrm{BF}\ge10$ adds only $10$--$20$ participants in any attainable cell, whereas quadrupling the component count can double or triple the requirement. Third, the criterion is extremely specific: the probability of reaching any threshold under the global null is below $1\%$ everywhere and vanishes as $N$ grows, the expected consistency property of Bayes factors.
 
-![Version-4 results. (A) Power curves for $\mathrm{BF}_{10}\ge10$ at $K=20$ by global effect size; dotted red lines mark $N=60$ and $72$. (B) Evidence thresholds $4/6/10$ at $R^{2}=0.09$ (solid) and $0.16$ (dashed), $K=20$. (C) Effect of the number of retained components at $R^{2}=0.09$, $\mathrm{BF}\ge10$. (D) False-positive rate under the global null.](../results/Fig_v4_MVG.png){#fig:v4 width="100%"}
+![Cohort-1 results. (A) Power curves for $\mathrm{BF}_{H_1/H_0}\ge10$ at $K=20$ by global effect size; dotted red lines mark $N=60$ and $72$. (B) Evidence thresholds $4/6/10$ at $R^{2}=0.09$ (solid) and $0.16$ (dashed), $K=20$. (C) Effect of the number of retained components at $R^{2}=0.09$, $\mathrm{BF}\ge10$. (D) False-positive rate under the global null.](../results/Fig_v4_MVG.png){#fig:v4 width="100%"}
+
+![Cohort 1 in 3D: probability that the global-model $\mathrm{BF}_{H_1/H_0}$ clears the threshold, over sample size and threshold, one surface per global effect $R^{2}$ ($K=20$). Vertical posts mark $N=60$ at $\mathrm{BF}_{H_1/H_0}=3$ and $10$.](../results/Fig_3D_BF_v4_c1.png){#fig:tresd_c1 width="92%"}
 
 ## Cohort 2
 
 ::: {#tab:v4c2}
-|      $K$      | Group separation      | $\mathrm{BF}_{10}\ge4$ | $\mathrm{BF}_{10}\ge6$ | $\mathrm{BF}_{10}\ge10$ |
-|:-------------:|:----------------------|-----------------------:|-----------------------:|------------------------:|
-|       5       | $R^2=0.09$ ($D=0.63$) |                    137 |                    142 |                     150 |
-|       5       | $R^2=0.16$ ($D=0.87$) |                 **66** |                     70 |                      73 |
-|       5       | $R^2=0.25$ ($D=1.16$) |                 **36** |                     39 |                      41 |
-|      10       | $R^2=0.16$            |                     92 |                     95 |                      99 |
-|      10       | $R^2=0.25$            |                     49 |                     53 |                      57 |
-| 14 (90% var.) | $R^2=0.16$            |                    113 |                    117 |                     122 |
-| 14 (90% var.) | $R^2=0.25$            |                     62 |                     65 |                      68 |
-| 20 (lab ICA)  | $R^2=0.16$            |                    140 |                    144 |                     148 |
-| 20 (lab ICA)  | $R^2=0.25$            |                     74 |                     77 |                      82 |
+|      $K$      | Group separation      | $\mathrm{BF}_{H_1/H_0}\ge4$ | $\mathrm{BF}_{H_1/H_0}\ge6$ | $\mathrm{BF}_{H_1/H_0}\ge10$ |
+|:-------------:|:----------------------|----------------------------:|----------------------------:|-----------------------------:|
+|       5       | $R^2=0.09$ ($D=0.63$) |                         137 |                         142 |                          150 |
+|       5       | $R^2=0.16$ ($D=0.87$) |                      **66** |                          70 |                           73 |
+|       5       | $R^2=0.25$ ($D=1.16$) |                      **36** |                          39 |                           41 |
+|      10       | $R^2=0.16$            |                          92 |                          95 |                           99 |
+|      10       | $R^2=0.25$            |                          49 |                          53 |                           57 |
+| 14 (90% var.) | $R^2=0.16$            |                         113 |                         117 |                          122 |
+| 14 (90% var.) | $R^2=0.25$            |                          62 |                          65 |                           68 |
+| 20 (lab ICA)  | $R^2=0.16$            |                         140 |                         144 |                          148 |
+| 20 (lab ICA)  | $R^2=0.25$            |                          74 |                          77 |                           82 |
 
 : Cohort 2: required $n$ per group for $\mathrm{Power}\ge0.80$ (total $N$ halved, rounded up), with no hormonal group effect ($d_h=0$). $D=2\sqrt{R^{2}/(1-R^{2})}$ is the equivalent multivariate Mahalanobis separation between groups.
 :::
 
 $R^{2}=0.04$ ($D=0.41$) is not attainable at any $K$ with $N\le300$ total, and $R^{2}=0.09$ only with $K=5$. At $30$ per group with $K=5$: power $0.696$ ($\mathrm{BF}\ge4$) and $0.568$ ($\mathrm{BF}\ge10$) for $R^{2}=0.25$, and $0.369$/$0.248$ for $R^{2}=0.16$; at $40$ per group, $0.872$/$0.796$ and $0.517$/$0.394$. Global-null false positives $<1\%$; a hormonal effect alone ($R^{2}=0$, $d_h=0.3$) fires the global criterion rarely ($0.03$--$0.07$ up to $N=300$).
 
-At the group separations typically reported for MCI, the design is feasible provided the component set is compact: with five components, $36$--$41$ per group suffice for $D=1.16$ and $66$--$73$ for $D=0.87$, whereas the full twenty-component set doubles those figures. Including the hormonal component in the model helps rather than costs: when a hormonal MCI--HC difference of $d_h=0.3$ accompanies the brain effect, requirements drop by roughly ten per group (Figure [2](#fig:v4c2){reference-type="ref" reference="fig:v4c2"}B; at $30$ per group and $R^{2}=0.25$, power rises from $0.696$ to $0.780$ at $\mathrm{BF}\ge4$), while a hormonal difference alone almost never fires the global criterion, so its inclusion does not inflate false claims.
+At the group separations typically reported for MCI, the design is feasible provided the component set is compact: with five components, $36$--$41$ per group suffice for $D=1.16$ and $66$--$73$ for $D=0.87$, whereas the full twenty-component set doubles those figures. Including the hormonal component in the model helps rather than costs: when a hormonal MCI--HC difference of $d_h=0.3$ accompanies the brain effect, requirements drop by roughly ten per group (Figure [3](#fig:v4c2){reference-type="ref" reference="fig:v4c2"}B; at $30$ per group and $R^{2}=0.25$, power rises from $0.696$ to $0.780$ at $\mathrm{BF}\ge4$), while a hormonal difference alone almost never fires the global criterion, so its inclusion does not inflate false claims.
 
-![Version-4 results for Cohort 2. (A) Power curves at $\mathrm{BF}_{10}\ge10$ with $K=5$ brain components plus the hormonal PC1, by brain separation (Mahalanobis $D$); the dotted grey line is the global null. (B) Number of components at $R^{2}=0.16$, with (dashed) and without (solid) a hormonal MCI--HC effect of $d_h=0.3$.](../results/Fig_v4_cohorte2.png){#fig:v4c2 width="100%"}
+![Cohort 2 results. (A) Power curves at $\mathrm{BF}_{H_1/H_0}\ge10$ with $K=5$ brain components plus the hormonal PC1, by brain separation (Mahalanobis $D$); the dotted grey line is the global null. (B) Number of components at $R^{2}=0.16$, with (dashed) and without (solid) a hormonal MCI--HC effect of $d_h=0.3$.](../results/Fig_v4_cohorte2.png){#fig:v4c2 width="100%"}
+
+## Fixed-design addendum: recovery of the multivariate MCI--HC pattern at $n=36$ per group
+
+The same committee question is answered under the alignment-free criterion: the MCI--HC magnitude $d=0.65$--$0.70$ is read as a multivariate Mahalanobis separation $D$, split at random across the components by the permuted spectrum, so $R^{2}=D^{2}/(4+D^{2})$ maps the requested band to $R^{2}=0.096$--$0.109$. Everything else (generator, hormonal PC1 in the model, evidence integral) is exactly as above; $4{,}000$ simulated studies per cell.
+
+::: {#tab:focal45}
+| $K$ | Separation             | $\mathrm{BF}_{H_1/H_0}\ge4$ | $\mathrm{BF}_{H_1/H_0}\ge6$ | $\mathrm{BF}_{H_1/H_0}\ge10$ |
+|:---:|:-----------------------|----------------------------:|----------------------------:|-----------------------------:|
+|  5  | $D=0.65$ ($R^2=0.096$) |                       0.183 |                       0.145 |                        0.109 |
+|  5  | $D=0.70$ ($R^2=0.109$) |                       0.239 |                       0.197 |                        0.151 |
+| 10  | $D=0.65$ ($R^2=0.096$) |                       0.076 |                       0.058 |                        0.043 |
+| 10  | $D=0.70$ ($R^2=0.109$) |                       0.117 |                       0.092 |                        0.068 |
+| 14  | $D=0.65$ ($R^2=0.096$) |                       0.051 |                       0.039 |                        0.028 |
+| 14  | $D=0.70$ ($R^2=0.109$) |                       0.066 |                       0.053 |                        0.038 |
+| 20  | $D=0.65$ ($R^2=0.096$) |                       0.030 |                       0.023 |                        0.016 |
+| 20  | $D=0.70$ ($R^2=0.109$) |                       0.038 |                       0.029 |                        0.021 |
+
+: Probability of recovering the multivariate pattern at $n=36$ per group (global-model $\mathrm{BF}_{H_1/H_0}\ge\tau$; no hormonal group effect). $R^{2}=D^{2}/(4+D^{2})$.
+:::
+
+Context at $36$/group, $K=5$: $D=0.50$ gives 0.071 and $D=1.00$ gives 0.644 at $\mathrm{BF}\ge4$. False positives under the global null at the focal point: 0.006 ($K=5$) to 0.003 ($K=20$) at $\mathrm{BF}\ge4$. A hormonal group effect $d_h=0.3$ raises recovery at $D=0.65$--$0.70$ to 0.258--0.317 ($\mathrm{BF}\ge4$).
+
+::: {#tab:nreq45}
+| $K$ | $D=0.50$ | $D=0.65$ | $D=0.70$ | $D=0.80$ | $D=1.00$ |
+|:---:|---------:|---------:|---------:|---------:|---------:|
+|  5  |     n.a. |      126 |      106 |       79 |       48 |
+| 10  |     n.a. |     n.a. |      151 |      112 |       68 |
+| 14  |     n.a. |     n.a. |     n.a. |      136 |       80 |
+| 20  |     n.a. |     n.a. |     n.a. |     n.a. |      100 |
+
+: Context: required $n$ per group for $0.80$ power at the requested effect sizes (total $N$ halved, rounded up). "n.a." = not attainable with $N\le320$.
+:::
+
+The pattern mirrors every result above: the omnibus criterion pays for dimensionality, so a diffuse $D=0.65$--$0.70$ at $36$ per group yields only $0.18$--$0.24$ recovery with five components, decaying to $0.03$--$0.04$ with twenty, and the evidence threshold matters far less than $K$ (Table [4](#tab:focal45){reference-type="ref" reference="tab:focal45"}). Reaching $0.80$ for this band requires approximately $126$ per group at $D=0.65$ and $106$ at $D=0.70$ with $K=5$ (Table [5](#tab:nreq45){reference-type="ref" reference="tab:nreq45"}); at $36$ per group the criterion only reaches the target for separations near $D=1$ ($0.64$ at $\mathrm{BF}\ge4$). The compensating property is specificity: the global null fires in at most $0.006$ of studies at the focal point, so any positive omnibus result at this $n$ would be trustworthy, just unlikely for the requested effect size.
+
+![Fixed-design addendum. (A) Recovery as a function of $n$ per group at $K=5$ and $\mathrm{BF}_{H_1/H_0}\ge10$, by separation $D$. (B) Recovery at $36$ per group across $K$. (C) Evidence thresholds at the focal point; the shaded band is $D=0.65$--$0.70$. (D) False-positive rate under the global null.](../results/Fig_v45_recuperacion.png){#fig:v45 width="100%"}
+
+![The fixed-design question in 3D: probability that the global-model $\mathrm{BF}_{H_1/H_0}$ clears the threshold, over $n$ per group and the threshold, one surface per multivariate separation $D$. The vertical posts mark the vertices $n=36$ per group at $\mathrm{BF}_{H_1/H_0}=3$ and $10$.](../results/Fig_3D_BF_v4_c2.png){#fig:v45tresd width="92%"}
 
 # Conclusion
 

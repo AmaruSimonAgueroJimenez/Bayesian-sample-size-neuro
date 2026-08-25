@@ -1,0 +1,84 @@
+{
+  "criterio": "Lasso bayesiano (y=grupo ~ K PCs cerebro + PC1 hormonal + edad); deteccion = >=1 PC cerebral con CrI95 excluyendo 0; recuperacion = el PC verdadero significativo",
+  "n_focal_por_grupo": 36,
+  "M_lasso": 400,
+  "M_bf": 4000,
+  "recuperacion_en_36_por_grupo": {
+    "K5_d0.5": {
+      "p_any": 0.265,
+      "p_true": 0.2375
+    },
+    "K5_d0.65": {
+      "p_any": 0.465,
+      "p_true": 0.455
+    },
+    "K5_d0.7": {
+      "p_any": 0.53,
+      "p_true": 0.515
+    },
+    "K5_d0.8": {
+      "p_any": 0.6675,
+      "p_true": 0.66
+    },
+    "K5_d1.0": {
+      "p_any": 0.8975,
+      "p_true": 0.8925
+    },
+    "K10_d0.65": {
+      "p_any": 0.475,
+      "p_true": 0.4425
+    },
+    "K10_d0.7": {
+      "p_any": 0.5875,
+      "p_true": 0.57
+    },
+    "K14_d0.65": {
+      "p_any": 0.475,
+      "p_true": 0.42
+    },
+    "K14_d0.7": {
+      "p_any": 0.605,
+      "p_true": 0.5575
+    },
+    "K20_d0.65": {
+      "p_any": 0.5925,
+      "p_true": 0.5075
+    },
+    "K20_d0.7": {
+      "p_any": 0.6125,
+      "p_true": 0.55
+    }
+  },
+  "fw_nulo_en_36_por_grupo": {
+    "K5": 0.0275,
+    "K10": 0.0675,
+    "K14": 0.075,
+    "K20": 0.1575
+  },
+  "n_TOTAL_requerido_K5": {
+    "0.5": null,
+    "0.65": 132.0,
+    "0.7": 107.0,
+    "0.8": 93.0,
+    "1.0": 57.0
+  },
+  "n_TOTAL_requerido_K5_true": {
+    "0.5": null,
+    "0.65": 135.0,
+    "0.7": 107.0,
+    "0.8": 95.0,
+    "1.0": 57.0
+  },
+  "dh03_en_36_por_grupo_K5": {
+    "0.65": {
+      "p_any": 0.47,
+      "p_true": 0.4425,
+      "p_horm": 0.085
+    },
+    "0.7": {
+      "p_any": 0.585,
+      "p_true": 0.5725,
+      "p_horm": 0.0775
+    }
+  }
+}

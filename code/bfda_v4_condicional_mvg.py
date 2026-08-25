@@ -297,7 +297,7 @@ def correr_cohorte2_v4(cfg, rng, outdir):
     _estilo(ax)
     ax.legend(frameon=False, fontsize=9, loc="upper left")
 
-    fig.suptitle("Version 4, Cohort 2: MCI vs HC under the permutation-"
+    fig.suptitle("Cohort 2: MCI vs HC under the permutation-"
                  "marginalized conditional MVG paradigm", y=1.0,
                  fontsize=14, fontweight="bold", color=COL["tinta"])
     fig.text(0.5, -0.02, "y = standardized balanced group indicator · X = "
@@ -518,7 +518,7 @@ def main():
     _estilo(ax)
     ax.legend(frameon=False, fontsize=9, loc="upper right")
 
-    fig.suptitle("BFDA v4: Permutation-Marginalized Conditional MVG "
+    fig.suptitle("Permutation-marginalized conditional MVG "
                  "(global-model Bayes factor)", y=0.995, fontsize=14.5,
                  fontweight="bold", color=COL["tinta"])
     fig.text(0.5, 0.012,

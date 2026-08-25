@@ -1,4 +1,4 @@
-# Bayesian-sample-size-neuro
+# bayesian-sample-size-neuro
 
 Bayesian sample size determination (Bayes Factor Design Analysis, BFDA) for two
 neuroimaging cohort studies:
@@ -23,7 +23,9 @@ Bayesian-Lasso pipeline (success = at least one brain principal component with
 a 95% credible interval excluding zero, plus posterior standardized beta
 recovery). Version 4 uses a permutation-marginalized conditional multivariate
 Gaussian generator with global-model Bayes factors (the exact equivalent of
-`BayesFactor::regressionBF`).
+`BayesFactor::regressionBF`). Both v3 and v4 include a fixed-design addendum
+(recovery of an MCI-HC effect of d = 0.65-0.70 at n = 36 per group) and all
+four reports carry 3-D power surfaces over the BF_H1/H0 evidence threshold.
 
 | Report | Method | Outcome variable |
 |---|---|---|
@@ -46,9 +48,12 @@ code/                        Simulation engines and figure scripts
   bfda_lasso_multivariante.py  Bayesian-Lasso BFDA engine (v3; --predictor pm25)
   bfda_v4_condicional_mvg.py   Conditional-MVG global-BF engine (v4; --predictor pm25)
   bfda_v4_condicional_mvg.R    R reference implementation (BayesFactor::regressionBF)
+  bfda_v35_recuperacion_c2.py  Cohort-2 recovery at fixed n (feeds the v3 addendum section)
+  bfda_v45_recuperacion_c2.py  Cohort-2 recovery at fixed n (feeds the v4 addendum section)
   bfda_n_optimo.py             Univariate JZS BFDA engine (cross-check; imported by v3)
   validacion_gibbs_lasso.py    Scalar Gibbs Lasso (JAGS port) + Savage-Dickey validation
   swan_figures.py              SWAN descriptive figures (needs the raw SWAN .dta file)
+  build_figs_3d_bf.py          3-D power surfaces (n x BF_H1/H0 threshold) for all analyses
 data/                        Frozen calibration inputs
   calibracion_swan_pc1.csv     Standardized hormonal PC1 + age, by STRAW stage
   calibracion_dkt_*.csv        DKT residuals, ROI SDs, eigenvalue spectrum
